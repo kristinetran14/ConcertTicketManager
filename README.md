@@ -127,7 +127,8 @@ This project is designed to run on Microsoft Azure with the following components
 
 ### 🔗 Live Demo
 Access the live application here:  
-👉 [Concert Ticket Management System (Live on Azure)]([https://your-azure-app-url.azurewebsites.net](https://concertticketwebapi-cjhtewe8cpfyfqe3.westus2-01.azurewebsites.net/))
+👉 [Concert Ticket Management System (Live on Azure)](https://concertticketwebapi-cjhtewe8cpfyfqe3.westus2-01.azurewebsites.net)
+
 
 ---
 
