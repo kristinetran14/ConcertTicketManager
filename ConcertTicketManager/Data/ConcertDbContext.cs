@@ -1,69 +1,59 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.Net.Sockets;
-using System;
 
-namespace ConcertTicketManager.Data
+public class ConcertDbContext : DbContext
 {
-    public class ConcertDbContext : DbContext
+    public ConcertDbContext(DbContextOptions<ConcertDbContext> options)
+        : base(options)
+    { }
+
+    public DbSet<Venue> Venues { get; set; }
+    public DbSet<Event> Events { get; set; }
+    public DbSet<TicketType> TicketTypes { get; set; }
+    public DbSet<TicketReservation> TicketReservations { get; set; }
+    public DbSet<TicketPurchase> TicketPurchases { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        public ConcertDbContext(DbContextOptions<ConcertDbContext> options) : base(options) { }
+        base.OnModelCreating(modelBuilder); 
 
-        public DbSet<Venue> Venues { get; set; }
-        public DbSet<Event> Events { get; set; }
-        public DbSet<TicketType> TicketTypes { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<Reservation> Reservations { get; set; }
-        public DbSet<Ticket> Tickets { get; set; }
+        // TicketType and Event
+        modelBuilder.Entity<TicketType>()
+            .HasOne(t => t.Event) // Each TicketType has one Event
+            .WithMany(e => e.TicketTypes) // Each Event can have many TicketTypes
+            .HasForeignKey(t => t.EventId) // Foreign key on EventId in TicketType
+            .OnDelete(DeleteBehavior.Cascade); // Delete related TicketTypes when an Event is deleted
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Event>()
-                .HasOne(e => e.Venue)
-                .WithMany(v => v.Events)
-                .HasForeignKey(e => e.VenueId)
-                .OnDelete(DeleteBehavior.Cascade);
+        // TicketReservation and Customer
+        modelBuilder.Entity<TicketReservation>()
+            .HasOne(tr => tr.Customer) // Each TicketReservation is associated with one Customer
+            .WithMany(c => c.Reservations) // Each Customer can have many TicketReservations
+            .HasForeignKey(tr => tr.CustomerId) // Foreign key on CustomerId in TicketReservation
+            .OnDelete(DeleteBehavior.Cascade); // Delete related TicketReservations when a Customer is deleted
 
-            modelBuilder.Entity<TicketType>(entity =>
-            {
-                entity.HasOne(tt => tt.Event)
-                      .WithMany(e => e.TicketTypes)
-                      .HasForeignKey(tt => tt.EventId)
-                      .OnDelete(DeleteBehavior.Cascade);
+        // TicketReservation and TicketType
+        modelBuilder.Entity<TicketReservation>()
+            .HasOne(tr => tr.TicketType) // Each TicketReservation is associated with one TicketType
+            .WithMany(tt => tt.Reservations) // Each TicketType can have many TicketReservations
+            .HasForeignKey(tr => tr.TicketTypeId) // Foreign key on TicketTypeId in TicketReservation
+            .OnDelete(DeleteBehavior.Cascade); // Delete related TicketReservations when a TicketType is deleted
 
-                entity.Property(tt => tt.Price)
-                      .HasPrecision(18, 4);
-            });
+        // TicketPurchase and TicketReservation
+        modelBuilder.Entity<TicketPurchase>()
+            .HasOne(tp => tp.Reservation) // Each TicketPurchase is associated with one TicketReservation
+            .WithOne(tr => tr.TicketPurchase) // Each TicketReservation has one associated TicketPurchase
+            .HasForeignKey<TicketPurchase>(tp => tp.ReservationId) // Foreign key on ReservationId in TicketPurchase
+            .OnDelete(DeleteBehavior.Cascade); // Delete related TicketPurchases when a TicketReservation is deleted
 
-            modelBuilder.Entity<Reservation>()
-                .HasOne(r => r.User)
-                .WithMany(u => u.Reservations)
-                .HasForeignKey(r => r.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+        // Venue and Event
+        modelBuilder.Entity<Venue>()
+            .HasMany(v => v.Events) // Each Venue can have many Events
+            .WithOne(e => e.Venue) // Each Event is associated with one Venue
+            .HasForeignKey(e => e.VenueId) // Foreign key on VenueId in Event
+            .OnDelete(DeleteBehavior.Cascade); // Delete related Events when a Venue is deleted
 
-            modelBuilder.Entity<Reservation>()
-                .HasOne(r => r.TicketType)
-                .WithMany(tt => tt.Reservations)
-                .HasForeignKey(r => r.TicketTypeId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.User)
-                .WithMany(u => u.Tickets)
-                .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Restrict); 
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.TicketType)
-                .WithMany(tt => tt.Tickets)
-                .HasForeignKey(t => t.TicketTypeId)
-                .OnDelete(DeleteBehavior.Restrict); 
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Reservation)
-                .WithMany()
-                .HasForeignKey(t => t.ReservationId)
-                .OnDelete(DeleteBehavior.SetNull);
-        }
+        modelBuilder.Entity<TicketType>()
+        .Property(t => t.Price)
+        .HasPrecision(18, 2);
     }
 }

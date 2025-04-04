@@ -1,30 +1,31 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Sockets;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 
 public class Event
 {
     [Key]
     public int EventId { get; set; }
 
-    [Required]
-    [ForeignKey("Venue")]
+    [Required(ErrorMessage = "Event name is required.")]
+    [StringLength(200, ErrorMessage = "Event name cannot exceed 200 characters.")]
+    public string Name { get; set; }
+
+    [Required(ErrorMessage = "Event date is required.")]
+    [DataType(DataType.DateTime)]
+    [Range(typeof(DateTime), "2025-04-03", "9999-12-31", ErrorMessage = "Event date must be a valid future date.")]
+    public DateTime Date { get; set; }
+
+    [Required(ErrorMessage = "Event description is required.")]
+    [StringLength(500, ErrorMessage = "Event description cannot exceed 500 characters.")]
+    public string Description { get; set; }
+
+    [Required(ErrorMessage = "VenueId is required.")]
     public int VenueId { get; set; }
 
-    [Required]
-    [StringLength(100)]
-    [Display(Name = "Event Name")]
-    public string Name { get; set; } = string.Empty;
+    [ForeignKey("VenueId")]
+    public Venue Venue { get; set; }
 
-    [StringLength(1000)]
-    [Display(Name = "Event Description")]
-    public string Description { get; set; } = string.Empty;
-
-    [Required]
-    [DataType(DataType.DateTime)]
-    [Display(Name = "Event Date")]
-    public DateTime EventDate { get; set; }
-
-    public Venue Venue { get; set; } = null!;
-    public ICollection<TicketType> TicketTypes { get; set; } = new List<TicketType>();
+    public ICollection<TicketType> TicketTypes { get; set; }
 }

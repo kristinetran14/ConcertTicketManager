@@ -1,0 +1,57 @@
+﻿@model ConcertTicketManager.ViewModels.EventViewModel
+
+@{
+    ViewData["Title"] = "Create Event";
+}
+
+<h2>Create Event</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Name">Event Name</label>
+        <input type="text" id="Name" name="Name" class="form-control" value="@Model.Name" required />
+        @if (ViewData.ModelState["Name"]?.Errors.Count > 0)
+        {
+            <div class="text-danger">
+                @ViewData.ModelState["Name"]?.Errors[0]?.ErrorMessage
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="Date">Event Date</label>
+        <input type="datetime-local" id="Date" name="Date" class="form-control" value="@Model.Date.ToString("yyyy-MM-ddTHH:mm")" required />
+        @if (ViewData.ModelState["Date"]?.Errors.Count > 0)
+        {
+            <div class="text-danger">
+                @ViewData.ModelState["Date"]?.Errors[0]?.ErrorMessage
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="VenueId">Venue</label>
+        <select id="VenueId" name="VenueId" class="form-control">
+            <option value="">Select a Venue</option>
+            @foreach (var venue in ViewBag.Venues)
+            {
+                <option value="@venue.VenueId">@venue.Name</option>
+            }
+        </select>
+        @if (ViewData.ModelState["VenueId"]?.Errors.Count > 0)
+        {
+            <div class="text-danger">
+                @ViewData.ModelState["VenueId"]?.Errors[0]?.ErrorMessage
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label for="Description">Event Description</label>
+        <textarea id="Description" name="Description" class="form-control">@Model.Description</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Event</button>
+</form>
+
+<a href="@Url.Action("Create", "Event")">Create another event</a>
