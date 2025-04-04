@@ -27,6 +27,5 @@ public class TicketReservation
 
     public bool IsPurchased { get; set; } = false;
 
-    // Navigation Property
     public TicketPurchase TicketPurchase { get; set; }
 }
