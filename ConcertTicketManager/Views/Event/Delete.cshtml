@@ -1,0 +1,17 @@
+﻿@model Event
+
+@{
+    ViewData["Title"] = "Delete Event";
+}
+
+<h2>Delete Event</h2>
+
+<div class="alert alert-warning">
+    Are you sure you want to delete the event <strong>@Model.Name</strong> scheduled for <strong>@Model.Date.ToString("yyyy-MM-dd HH:mm")</strong> at <strong>@Model.Venue?.Name</strong>?
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="EventId" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

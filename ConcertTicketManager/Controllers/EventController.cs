@@ -187,4 +187,44 @@ public class EventController : Controller
 
         return RedirectToAction("Index");
     }
+
+    public async Task<IActionResult> Delete(int id)
+    {
+        var ev = await _context.Events
+            .Include(e => e.Venue)
+            .FirstOrDefaultAsync(e => e.EventId == id);
+
+        if (ev == null)
+            return NotFound();
+
+        return View(ev);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var ev = await _context.Events
+            .Include(e => e.TicketTypes)
+            .FirstOrDefaultAsync(e => e.EventId == id);
+
+        if (ev == null)
+            return NotFound();
+
+        // Check if ticket reservations exist (if you want to prevent deleting sold/reserved events)
+        var salesStarted = await _context.TicketReservations.AnyAsync(r => r.TicketType.EventId == id);
+        if (salesStarted)
+        {
+            TempData["ErrorMessage"] = "Cannot delete event because ticket sales have started.";
+            return RedirectToAction("Index");
+        }
+
+        // Delete ticket types first due to FK constraint
+        _context.TicketTypes.RemoveRange(ev.TicketTypes);
+        _context.Events.Remove(ev);
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction("Index");
+    }
+
 }

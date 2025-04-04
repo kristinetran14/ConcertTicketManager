@@ -4,9 +4,16 @@
     ViewData["Title"] = "All Concert Events";
 }
 
-<h2>All Concert Events</h2>
+<h2 class="mb-3">All Concert Events</h2>
 
-<a class="btn btn-success mb-3" asp-action="Create">+ Create New Event</a>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<a asp-action="Create" class="btn btn-success mb-3">+ Create New Event</a>
 
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
@@ -16,14 +23,14 @@
             <th>Venue</th>
             <th>Description</th>
             <th>Ticket Types</th>
-            <th>Actions</th>
+            <th style="width: 150px;">Actions</th>
         </tr>
     </thead>
     <tbody>
         @if (!Model.Any())
         {
             <tr>
-                <td colspan="6" class="text-center">No events found.</td>
+                <td colspan="6" class="text-center text-muted">No events found.</td>
             </tr>
         }
         else
@@ -42,7 +49,7 @@
                                 @foreach (var ticket in ev.TicketTypes)
                                 {
                                     <li>
-                                        @ticket.Type - @ticket.Price.ToString("C") (Capacity: @ticket.Capacity)
+                                        @ticket.Type - @ticket.Price.ToString("C") (Cap: @ticket.Capacity)
                                     </li>
                                 }
                             </ul>
@@ -53,7 +60,8 @@
                         }
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@ev.EventId">Edit</a>
+                        <a asp-action="Edit" asp-route-id="@ev.EventId" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@ev.EventId" class="btn btn-sm btn-danger ml-2">Delete</a>
                     </td>
                 </tr>
             }
