@@ -1,0 +1,75 @@
+﻿@model EventViewModel
+
+@{
+    ViewData["Title"] = "Edit Event";
+}
+
+<h2>Edit Event</h2>
+
+@if (Model.TicketSalesStarted)
+{
+    <div class="alert alert-warning">
+        Ticket sales have already started. You can no longer modify this event.
+    </div>
+}
+else
+{
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="EventId" />
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Date"></label>
+            <input asp-for="Date" type="datetime-local" class="form-control" />
+            <span asp-validation-for="Date" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="VenueId"></label>
+            <select asp-for="VenueId" asp-items="Model.Venues" class="form-control"></select>
+            <span asp-validation-for="VenueId" class="text-danger"></span>
+        </div>
+
+        <h4>Ticket Types</h4>
+        <div id="ticketTypes">
+            @for (int i = 0; i < Model.TicketTypes.Count; i++)
+            {
+                <div class="border p-3 mb-3">
+                    <div class="form-group">
+                        <label asp-for="@Model.TicketTypes[i].Type"></label>
+                        <input asp-for="@Model.TicketTypes[i].Type" class="form-control" />
+                        <span asp-validation-for="@Model.TicketTypes[i].Type" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.TicketTypes[i].Price"></label>
+                        <input asp-for="@Model.TicketTypes[i].Price" class="form-control" />
+                        <span asp-validation-for="@Model.TicketTypes[i].Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="@Model.TicketTypes[i].Capacity"></label>
+                        <input asp-for="@Model.TicketTypes[i].Capacity" class="form-control" />
+                        <span asp-validation-for="@Model.TicketTypes[i].Capacity" class="text-danger"></span>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Event</button>
+    </form>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -106,4 +106,85 @@ public class EventController : Controller
             Text = "-- Select Venue --"
         }).ToList();
     }
+
+    public async Task<IActionResult> Edit(int id)
+    {
+        var ev = await _context.Events
+            .Include(e => e.Venue)
+            .Include(e => e.TicketTypes)
+            .FirstOrDefaultAsync(e => e.EventId == id);
+
+        if (ev == null) return NotFound();
+
+        bool ticketSalesStarted = await _context.TicketReservations.AnyAsync(r => r.TicketType.EventId == id);
+
+
+        var model = new EventViewModel
+        {
+            EventId = ev.EventId,
+            Name = ev.Name,
+            Date = ev.Date,
+            Description = ev.Description,
+            VenueId = ev.VenueId,
+            TicketTypes = ev.TicketTypes.Select(tt => new TicketTypeViewModel
+            {
+                Type = tt.Type,
+                Price = tt.Price,
+                Capacity = tt.Capacity
+            }).ToList(),
+            Venues = await GetVenueSelectListAsync(),
+            TicketSalesStarted = ticketSalesStarted
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EventViewModel model)
+    {
+        model.Venues = await GetVenueSelectListAsync();
+
+        if (!ModelState.IsValid) return View(model);
+
+        var existingEvent = await _context.Events
+            .Include(e => e.TicketTypes)
+            .FirstOrDefaultAsync(e => e.EventId == model.EventId);
+
+        if (existingEvent == null) return NotFound();
+
+        bool ticketSalesStarted = await _context.TicketReservations.AnyAsync(r => r.TicketType.EventId == model.EventId);
+        if (ticketSalesStarted)
+        {
+            ModelState.AddModelError("", "You cannot update this event because ticket sales have already started.");
+            model.TicketSalesStarted = true;
+            return View(model);
+        }
+
+        var newVenue = await _context.Venues.FindAsync(model.VenueId);
+        if (newVenue == null || model.TicketTypes.Sum(t => t.Capacity) > newVenue.Capacity)
+        {
+            ModelState.AddModelError("VenueId", "The selected venue does not meet capacity requirements.");
+            return View(model);
+        }
+
+        // Update event
+        existingEvent.Name = model.Name;
+        existingEvent.Date = model.Date;
+        existingEvent.Description = model.Description;
+        existingEvent.VenueId = model.VenueId.Value;
+
+        _context.TicketTypes.RemoveRange(existingEvent.TicketTypes);
+        existingEvent.TicketTypes = model.TicketTypes.Select(t => new TicketType
+        {
+            Type = t.Type,
+            Price = t.Price,
+            Capacity = t.Capacity
+        }).ToList();
+
+        _context.Events.Update(existingEvent);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
+    }
 }

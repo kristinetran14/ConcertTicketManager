@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Event>
 
 @{
-    ViewData["Title"] = "All Events";
+    ViewData["Title"] = "All Concert Events";
 }
 
 <h2>All Concert Events</h2>
@@ -9,41 +9,54 @@
 <a class="btn btn-success mb-3" asp-action="Create">+ Create New Event</a>
 
 <table class="table table-bordered table-striped">
-    <thead>
+    <thead class="thead-dark">
         <tr>
             <th>Event Name</th>
             <th>Date</th>
             <th>Venue</th>
             <th>Description</th>
             <th>Ticket Types</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var ev in Model)
+        @if (!Model.Any())
         {
             <tr>
-                <td>@ev.Name</td>
-                <td>@ev.Date.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>@ev.Venue?.Name</td>
-                <td>@ev.Description</td>
-                <td>
-                    @if (ev.TicketTypes?.Any() == true)
-                    {
-                        <ul>
-                            @foreach (var ticket in ev.TicketTypes)
-                            {
-                                <li>
-                                    @ticket.Type - @ticket.Price.ToString("C") (Capacity: @ticket.Capacity)
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <em>No ticket types defined</em>
-                    }
-                </td>
+                <td colspan="6" class="text-center">No events found.</td>
             </tr>
+        }
+        else
+        {
+            @foreach (var ev in Model)
+            {
+                <tr>
+                    <td>@ev.Name</td>
+                    <td>@ev.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@ev.Venue?.Name</td>
+                    <td>@ev.Description</td>
+                    <td>
+                        @if (ev.TicketTypes?.Any() == true)
+                        {
+                            <ul class="mb-0">
+                                @foreach (var ticket in ev.TicketTypes)
+                                {
+                                    <li>
+                                        @ticket.Type - @ticket.Price.ToString("C") (Capacity: @ticket.Capacity)
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <em>No ticket types defined</em>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@ev.EventId">Edit</a>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
 </table>

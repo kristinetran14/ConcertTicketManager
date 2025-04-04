@@ -5,27 +5,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 public class EventViewModel
 {
-    [Required(ErrorMessage = "Event name is required.")]
-    [StringLength(200, ErrorMessage = "Event name cannot exceed 200 characters.")]
+    public int EventId { get; set; }
+
+    [Required]
+    [StringLength(200)]
     public string Name { get; set; }
 
-    [Required(ErrorMessage = "Event date is required.")]
+    [Required]
     [DataType(DataType.DateTime)]
     [Display(Name = "Event Date")]
     public DateTime Date { get; set; }
 
-    [Required(ErrorMessage = "Event description is required.")]
-    [StringLength(500, ErrorMessage = "Event description cannot exceed 500 characters.")]
+    [Required]
+    [StringLength(500)]
     public string Description { get; set; }
 
-    [Required(ErrorMessage = "Venue is required.")]
+    [Required]
     [Display(Name = "Venue")]
     public int? VenueId { get; set; }
 
     public List<SelectListItem> Venues { get; set; } = new();
-
     public List<TicketTypeViewModel> TicketTypes { get; set; } = new();
+
+    public bool TicketSalesStarted { get; set; }  // For disabling update logic
 }
+
 
 public class TicketTypeViewModel
 {
