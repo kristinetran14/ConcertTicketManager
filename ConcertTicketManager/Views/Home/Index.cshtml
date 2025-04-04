@@ -1,8 +1,65 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Concert Ticket Management System";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="text-center my-4">
+        <h1 class="display-4">Concert Ticket Management System</h1>
+        <p class="text-muted">Developed by Kristine Tran</p>
+        <p class="lead">
+            A .NET Web API to manage concert events, ticket reservations, and venue capacities efficiently.
+        </p>
+    </div>
+
+    <section class="mb-5">
+        <h2>Overview</h2>
+        <p>
+            The Concert Ticket Management System enables event organizers to easily create and manage events, while customers can conveniently reserve and purchase tickets.
+        </p>
+    </section>
+
+    <section class="mb-5">
+        <h2>Features</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Event Management</h4>
+                <ul>
+                    <li>Create and update concert events</li>
+                    <li>Set ticket types and pricing</li>
+                    <li>Manage venue capacity</li>
+                    <li>Store event details (date, venue, description)</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h4>Ticket Reservations and Sales</h4>
+                <ul>
+                    <li>Reserve tickets temporarily</li>
+                    <li>Purchase tickets securely</li>
+                    <li>Cancel reservations easily</li>
+                    <li>View real-time ticket availability</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-5">
+        <h2>User Stories</h2>
+        <div>
+            <h4>Event Management</h4>
+            <ul>
+                <li><strong>Create a Concert Event</strong>: Define unique events with date, venue, ticket types, and capacity.</li>
+                <li><strong>Update a Concert Event</strong>: Modify event details before ticket sales begin, ensuring venue capacity compliance.</li>
+                <li><strong>Set Ticket Types and Pricing</strong>: Offer multiple ticket options at varying prices.</li>
+                <li><strong>Manage Available Capacity</strong>: Monitor and update real-time ticket availability.</li>
+            </ul>
+
+            <h4>Ticket Reservations and Sales</h4>
+            <ul>
+                <li><strong>Reserve Tickets Temporarily</strong>: Allow short-term ticket reservations while completing purchases.</li>
+                <li><strong>Purchase Tickets</strong>: Integrated payment system ensures secure transactions.</li>
+                <li><strong>Cancel Reservations</strong>: Easily cancel reservations and return tickets to availability.</li>
+                <li><strong>View Ticket Availability</strong>: Real-time updates on ticket inventory and event status.</li>
+            </ul>
+        </div>
+    </section>
 </div>
