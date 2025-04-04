@@ -125,10 +125,9 @@ This project is designed to run on Microsoft Azure with the following components
 - **Azure App Services** – for hosting the MVC frontend and Web API
 - **Azure SQL Database** – for storing event, venue, and ticket data
 
-### Deployment Instructions
-1. Clone the repository and update `appsettings.json` with your Azure configuration.
-2. Publish the solution to Azure App Services using Visual Studio or CI/CD pipelines.
-3. Run Entity Framework Core migrations to initialize the Azure SQL Database.
+### 🔗 Live Demo
+Access the live application here:  
+👉 [Concert Ticket Management System (Live on Azure)]([https://your-azure-app-url.azurewebsites.net](https://concertticketwebapi-cjhtewe8cpfyfqe3.westus2-01.azurewebsites.net/))
 
 ---
 
@@ -139,4 +138,3 @@ This project is designed to run on Microsoft Azure with the following components
 - **SQL Server / Azure SQL**
 - **Azure App Services**
 - Optional: **Stripe** or **PayPal** integration for payments
-
