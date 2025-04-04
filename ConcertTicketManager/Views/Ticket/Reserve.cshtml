@@ -1,0 +1,32 @@
+﻿@model TicketReservationViewModel
+
+<h2>Reserve Tickets</h2>
+
+<form asp-action="Reserve" method="post">
+    <div>
+        <label>Customer Name:</label>
+        <input asp-for="CustomerName" />
+        <span asp-validation-for="CustomerName"></span>
+    </div>
+    <div>
+        <label>Email:</label>
+        <input asp-for="CustomerEmail" />
+        <span asp-validation-for="CustomerEmail"></span>
+    </div>
+    <div>
+        <label>Ticket Type:</label>
+        <select asp-for="TicketTypeId">
+            @foreach (var type in ViewBag.TicketTypes)
+            {
+                <option value="@type.TicketTypeId">@type.Type - $@type.Price</option>
+            }
+        </select>
+        <span asp-validation-for="TicketTypeId"></span>
+    </div>
+    <div>
+        <label>Quantity:</label>
+        <input asp-for="Quantity" type="number" min="1" />
+        <span asp-validation-for="Quantity"></span>
+    </div>
+    <button type="submit">Reserve</button>
+</form>
