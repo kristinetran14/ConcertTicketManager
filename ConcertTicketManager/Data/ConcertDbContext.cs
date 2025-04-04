@@ -15,7 +15,7 @@ public class ConcertDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder); 
+        base.OnModelCreating(modelBuilder);
 
         // TicketType and Event
         modelBuilder.Entity<TicketType>()

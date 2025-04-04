@@ -1,57 +1,67 @@
-﻿@model ConcertTicketManager.ViewModels.EventViewModel
+﻿@model EventViewModel
 
 @{
     ViewData["Title"] = "Create Event";
 }
 
-<h2>Create Event</h2>
+<h1>Create Event</h1>
 
 <form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
     <div class="form-group">
-        <label for="Name">Event Name</label>
-        <input type="text" id="Name" name="Name" class="form-control" value="@Model.Name" required />
-        @if (ViewData.ModelState["Name"]?.Errors.Count > 0)
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Date"></label>
+        <input asp-for="Date" type="datetime-local" class="form-control" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="VenueId"></label>
+        <select asp-for="VenueId" asp-items="Model.Venues" class="form-control"></select>
+        <span asp-validation-for="VenueId" class="text-danger"></span>
+    </div>
+
+    <h4>Ticket Types</h4>
+    <div id="ticketTypes">
+        @for (int i = 0; i < Model.TicketTypes.Count; i++)
         {
-            <div class="text-danger">
-                @ViewData.ModelState["Name"]?.Errors[0]?.ErrorMessage
+            <div class="border p-3 mb-3">
+                <div class="form-group">
+                    <label asp-for="@Model.TicketTypes[i].Type"></label>
+                    <input asp-for="@Model.TicketTypes[i].Type" class="form-control" />
+                    <span asp-validation-for="@Model.TicketTypes[i].Type" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.TicketTypes[i].Price"></label>
+                    <input asp-for="@Model.TicketTypes[i].Price" class="form-control" />
+                    <span asp-validation-for="@Model.TicketTypes[i].Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="@Model.TicketTypes[i].Capacity"></label>
+                    <input asp-for="@Model.TicketTypes[i].Capacity" class="form-control" />
+                    <span asp-validation-for="@Model.TicketTypes[i].Capacity" class="text-danger"></span>
+                </div>
             </div>
         }
     </div>
 
-    <div class="form-group">
-        <label for="Date">Event Date</label>
-        <input type="datetime-local" id="Date" name="Date" class="form-control" value="@Model.Date.ToString("yyyy-MM-ddTHH:mm")" required />
-        @if (ViewData.ModelState["Date"]?.Errors.Count > 0)
-        {
-            <div class="text-danger">
-                @ViewData.ModelState["Date"]?.Errors[0]?.ErrorMessage
-            </div>
-        }
-    </div>
-
-    <div class="form-group">
-        <label for="VenueId">Venue</label>
-        <select id="VenueId" name="VenueId" class="form-control">
-            <option value="">Select a Venue</option>
-            @foreach (var venue in ViewBag.Venues)
-            {
-                <option value="@venue.VenueId">@venue.Name</option>
-            }
-        </select>
-        @if (ViewData.ModelState["VenueId"]?.Errors.Count > 0)
-        {
-            <div class="text-danger">
-                @ViewData.ModelState["VenueId"]?.Errors[0]?.ErrorMessage
-            </div>
-        }
-    </div>
-
-    <div class="form-group">
-        <label for="Description">Event Description</label>
-        <textarea id="Description" name="Description" class="form-control">@Model.Description</textarea>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create Event</button>
+    <button type="submit" class="btn btn-primary">Create</button>
 </form>
 
-<a href="@Url.Action("Create", "Event")">Create another event</a>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

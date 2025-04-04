@@ -1,7 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 
 public class Venue
 {
