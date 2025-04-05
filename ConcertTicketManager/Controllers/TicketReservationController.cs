@@ -117,4 +117,74 @@ public class TicketReservationController : Controller
 
         return Json(ticketTypes);
     }
+
+    [HttpGet]
+    public IActionResult Cancel()
+    {
+        return View(new CancelReservationViewModel());
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Cancel(CancelReservationViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var customer = await _context.Customers
+            .Include(c => c.Reservations)
+                .ThenInclude(r => r.TicketType)
+                    .ThenInclude(tt => tt.Event)
+            .FirstOrDefaultAsync(c => c.Email == model.Email);
+
+        if (customer == null)
+        {
+            model.Message = "No customer found with this email.";
+            return View(model);
+        }
+
+        var activeReservations = customer.Reservations
+            .Where(r => !r.IsPurchased && r.ExpirationTime > DateTime.UtcNow)
+            .ToList();
+
+        if (!activeReservations.Any())
+        {
+            model.Message = "No active reservations found.";
+            return View(model);
+        }
+
+        // If no reservations were selected yet, just display them to choose
+        if (!model.SelectedReservationIds.Any())
+        {
+            model.Reservations = activeReservations.Select(r => new ReservationSummary
+            {
+                ReservationId = r.ReservationId,
+                EventName = r.TicketType.Event.Name,
+                TicketType = r.TicketType.Type,
+                Quantity = r.Quantity,
+                ExpirationTime = r.ExpirationTime
+            }).ToList();
+
+            model.Message = "Select reservations to cancel.";
+            return View(model);
+        }
+
+        // Cancel selected reservations
+        var toCancel = activeReservations
+            .Where(r => model.SelectedReservationIds.Contains(r.ReservationId))
+            .ToList();
+
+        if (!toCancel.Any())
+        {
+            model.Message = "No valid reservations selected.";
+            return View(model);
+        }
+
+        _context.TicketReservations.RemoveRange(toCancel);
+        await _context.SaveChangesAsync();
+
+        model.Message = $"Canceled {toCancel.Count} reservation(s) for {customer.Email}.";
+        model.Reservations = new List<ReservationSummary>(); // Clear after cancellation
+        return View(model);
+    }
+
 }

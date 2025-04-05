@@ -1,0 +1,45 @@
+﻿@model CancelReservationViewModel
+
+@{
+    ViewData["Title"] = "Cancel Reservation";
+}
+
+<h2>Cancel Reservation</h2>
+
+<form asp-action="Cancel" method="post">
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    @if (Model.Reservations.Any())
+    {
+        <div class="mb-3">
+            <label class="form-label">Select Reservations to Cancel</label>
+            <div class="list-group">
+                @for (int i = 0; i < Model.Reservations.Count; i++)
+                {
+                    var r = Model.Reservations[i];
+                    <div class="list-group-item">
+                        <input type="checkbox" name="SelectedReservationIds" value="@r.ReservationId" />
+                        <strong>@r.EventName</strong> -
+                        @($"{r.TicketType} (x{r.Quantity})") -
+                        expires at <span class="text-muted">@r.ExpirationTime.ToString("u")</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-danger">Submit</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-info mt-3">@Model.Message</div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
