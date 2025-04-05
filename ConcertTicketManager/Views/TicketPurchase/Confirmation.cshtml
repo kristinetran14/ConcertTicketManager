@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Purchase Confirmation";
+}
+
+<h2>Thank you for your purchase!</h2>
+
+<div class="alert alert-success">
+    <p><strong>Event:</strong> @ViewBag.EventName</p>
+    <p><strong>Ticket Type:</strong> @ViewBag.TicketType</p>
+    <p><strong>Quantity:</strong> @ViewBag.Quantity</p>
+    <p><strong>Total Paid:</strong> @ViewBag.Total</p>
+    <p><strong>Confirmation sent to:</strong> @ViewBag.Email</p>
+</div>
+
+<a asp-action="Purchase" class="btn btn-primary">Make Another Purchase</a>
