@@ -16,9 +16,33 @@ public class EventController : Controller
         var events = await _context.Events
             .Include(e => e.Venue)
             .Include(e => e.TicketTypes)
+                .ThenInclude(tt => tt.Reservations)
             .ToListAsync();
 
-        return View(events);
+        var eventViewModels = events.Select(ev => new EventSummaryViewModel
+        {
+            EventId = ev.EventId,
+            Name = ev.Name,
+            Date = ev.Date,
+            Description = ev.Description,
+            VenueName = ev.Venue?.Name,
+            TicketTypes = ev.TicketTypes.Select(tt => new TicketTypeSummaryViewModel
+            {
+                Type = tt.Type,
+                Price = tt.Price,
+                Capacity = tt.Capacity,
+                ReservedCount = tt.Reservations
+                .Where(r => !r.IsPurchased && r.ExpirationTime > DateTime.UtcNow)
+                .Sum(r => r.Quantity),
+
+                PurchasedCount = tt.Reservations
+                .Where(r => r.IsPurchased)
+                .Sum(r => r.Quantity),
+
+            }).ToList()
+        }).ToList();
+
+        return View(eventViewModels);
     }
 
     public async Task<IActionResult> Create()
@@ -193,7 +217,19 @@ public class EventController : Controller
         if (ev == null)
             return NotFound();
 
-        return View(ev);
+        bool ticketSalesStarted = await _context.TicketReservations
+            .AnyAsync(r => r.TicketType.EventId == id);
+
+        var model = new EventDeleteViewModel
+        {
+            EventId = ev.EventId,
+            Name = ev.Name,
+            Date = ev.Date,
+            VenueName = ev.Venue?.Name,
+            TicketSalesStarted = ticketSalesStarted
+        };
+
+        return View(model);
     }
 
     [HttpPost, ActionName("Delete")]

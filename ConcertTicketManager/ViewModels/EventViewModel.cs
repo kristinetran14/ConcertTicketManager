@@ -43,3 +43,33 @@ public class TicketTypeViewModel
     [Range(1, int.MaxValue, ErrorMessage = "Capacity must be at least 1.")]
     public int Capacity { get; set; }
 }
+
+public class EventSummaryViewModel
+{
+    public int EventId { get; set; }
+    public string Name { get; set; }
+    public DateTime Date { get; set; }
+    public string Description { get; set; }
+    public string VenueName { get; set; }
+    public List<TicketTypeSummaryViewModel> TicketTypes { get; set; }
+}
+
+public class TicketTypeSummaryViewModel
+{
+    public string Type { get; set; }
+    public decimal Price { get; set; }
+    public int Capacity { get; set; }
+    public int ReservedCount { get; set; }
+    public int PurchasedCount { get; set; }
+
+    public int RemainingCapacity => Capacity - ReservedCount - PurchasedCount;
+}
+
+public class EventDeleteViewModel
+{
+    public int EventId { get; set; }
+    public string Name { get; set; }
+    public DateTime Date { get; set; }
+    public string VenueName { get; set; }
+    public bool TicketSalesStarted { get; set; }
+}

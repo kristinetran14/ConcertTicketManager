@@ -1,19 +1,4 @@
-﻿@model IEnumerable<Event>
-
-@{
-    ViewData["Title"] = "All Concert Events";
-}
-
-<h2 class="mb-3">All Concert Events</h2>
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
-
-<a asp-action="Create" class="btn btn-success mb-3">+ Create New Event</a>
+﻿@model IEnumerable<EventSummaryViewModel>
 
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
@@ -27,44 +12,40 @@
         </tr>
     </thead>
     <tbody>
-        @if (!Model.Any())
+        @foreach (var ev in Model)
         {
             <tr>
-                <td colspan="6" class="text-center text-muted">No events found.</td>
+                <td>@ev.Name</td>
+                <td>@ev.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@ev.VenueName</td>
+                <td>@ev.Description</td>
+                <td>
+                    @if (ev.TicketTypes.Any())
+                    {
+                        <ul class="mb-0">
+                            @foreach (var ticket in ev.TicketTypes)
+                            {
+                                <li>
+                                    <strong>@ticket.Type</strong> -
+                                    @ticket.Price.ToString("C")<br />
+                                    Capacity: @ticket.Capacity<br />
+                                    Reserved: @ticket.ReservedCount<br />
+                                    Purchased: @ticket.PurchasedCount<br />
+                                    Remaining: @ticket.RemainingCapacity
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <em>No ticket types defined</em>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@ev.EventId" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@ev.EventId" class="btn btn-sm btn-danger ml-2">Delete</a>
+                </td>
             </tr>
-        }
-        else
-        {
-            @foreach (var ev in Model)
-            {
-                <tr>
-                    <td>@ev.Name</td>
-                    <td>@ev.Date.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>@ev.Venue?.Name</td>
-                    <td>@ev.Description</td>
-                    <td>
-                        @if (ev.TicketTypes?.Any() == true)
-                        {
-                            <ul class="mb-0">
-                                @foreach (var ticket in ev.TicketTypes)
-                                {
-                                    <li>
-                                        @ticket.Type - @ticket.Price.ToString("C") (Cap: @ticket.Capacity)
-                                    </li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <em>No ticket types defined</em>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@ev.EventId" class="btn btn-sm btn-primary">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@ev.EventId" class="btn btn-sm btn-danger ml-2">Delete</a>
-                    </td>
-                </tr>
-            }
         }
     </tbody>
 </table>
