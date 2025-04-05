@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ConcertDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection1")));
 
 var app = builder.Build();
 
