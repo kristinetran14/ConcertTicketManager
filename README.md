@@ -3,6 +3,10 @@
 ## Overview
 The **Concert Ticket Management System** is an ASP.NET MVC (.NET 9) and Web API application designed to manage concert events, ticket reservations, and venue capacity. It enables event organizers to create and manage events while allowing customers to reserve and purchase tickets seamlessly.
 
+## 🔗 Live Demo
+Access the live application here:  
+👉 [Concert Ticket Management System (Live on Azure)](https://concertticketwebapi-cjhtewe8cpfyfqe3.westus2-01.azurewebsites.net)
+
 ## 🚀 Features
 
 ### 🎫 Event Management
@@ -124,11 +128,6 @@ This project is designed to run on Microsoft Azure with the following components
 
 - **Azure App Services** – for hosting the MVC frontend and Web API
 - **Azure SQL Database** – for storing event, venue, and ticket data
-
-### 🔗 Live Demo
-Access the live application here:  
-👉 [Concert Ticket Management System (Live on Azure)](https://concertticketwebapi-cjhtewe8cpfyfqe3.westus2-01.azurewebsites.net)
-
 
 ---
 
