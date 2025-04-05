@@ -1,0 +1,20 @@
+﻿@model TicketReservationViewModel
+
+@{
+    ViewData["Title"] = "Reservation Confirmed";
+}
+
+<h2>Reservation Confirmed</h2>
+
+<div class="alert alert-success">
+    <p>@Model.Message</p>
+</div>
+
+<ul class="list-group">
+    <li class="list-group-item"><strong>Name:</strong> @Model.CustomerName</li>
+    <li class="list-group-item"><strong>Email:</strong> @Model.Email</li>
+    <li class="list-group-item"><strong>Ticket Quantity:</strong> @Model.Quantity</li>
+    <li class="list-group-item"><strong>Reservation Expires At:</strong> @Model.ExpirationTime.ToString("u")</li>
+</ul>
+
+<a href="@Url.Action("Reserve", "TicketReservation")" class="btn btn-primary mt-3">Make Another Reservation</a>

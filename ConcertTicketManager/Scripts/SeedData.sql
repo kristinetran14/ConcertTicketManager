@@ -43,7 +43,17 @@ INSERT INTO [dbo].[TicketTypes] (EventId, Type, Price, Capacity) VALUES
 (32, 'Weekend Pass', 120.00, 1000),
 (32, 'Single Day', 50.00, 2000),
 (35, 'Regular', 40.00, 300),
-(35, 'Premium', 60.00, 100);
+(35, 'Premium', 60.00, 100),
+(27, 'VIP', 200.00, 500),
+(27, 'General Admission', 50.00, 1000),
+(29, 'VIP', 150.00, 300),
+(29, 'General Admission', 30.00, 800),
+(31, 'Front Row', 70.00, 100),
+(31, 'Standard', 25.00, 500),
+(33, 'Weekend Pass', 120.00, 1000),
+(33, 'Single Day', 50.00, 2000),
+(34, 'General Admission', 30.00, 800),
+(34, 'Front Row', 70.00, 100);
 
 -- Insert Customers (Independent Table)
 INSERT INTO [dbo].[Customers] (Name, Email, CreatedAt) VALUES

@@ -1,0 +1,69 @@
+﻿@model TicketReservationViewModel
+@{
+    ViewData["Title"] = "Reserve Tickets";
+}
+
+<h2>Reserve Tickets</h2>
+
+<form asp-action="Reserve" method="post">
+    <div class="mb-3">
+        <label asp-for="CustomerName" class="form-label">Your Name</label>
+        <input asp-for="CustomerName" class="form-control" />
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EventId" class="form-label">Select Event</label>
+        <select asp-for="EventId" asp-items="Model.Events" class="form-select" id="eventSelect">
+            <option value="">-- Select Event --</option>
+        </select>
+        <span asp-validation-for="EventId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TicketTypeId" class="form-label">Ticket Type</label>
+        <select asp-for="TicketTypeId" asp-items="Model.TicketTypes" class="form-select" id="ticketTypeSelect">
+            <option value="">-- Select Ticket Type --</option>
+        </select>
+        <span asp-validation-for="TicketTypeId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Quantity" class="form-label">Quantity</label>
+        <input asp-for="Quantity" class="form-control" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Reserve</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-success mt-3">@Model.Message</div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById("eventSelect").addEventListener("change", function () {
+            const eventId = this.value;
+            const ticketTypeSelect = document.getElementById("ticketTypeSelect");
+            ticketTypeSelect.innerHTML = '<option>Loading...</option>';
+
+            fetch(`/TicketReservation/GetTicketTypesByEvent?eventId=${eventId}`)
+                .then(response => response.json())
+                .then(data => {
+                    ticketTypeSelect.innerHTML = '<option value="">-- Select Ticket Type --</option>';
+                    data.forEach(item => {
+                        ticketTypeSelect.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+                    });
+                });
+        });
+    </script>
+}
